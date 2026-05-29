@@ -1,0 +1,149 @@
+{
+  "info": {
+    "name": "EP2 - ms-citas",
+    "description": "Coleccion de pruebas del microservicio de Citas (Pacientes y Citas). Base: http://localhost:8082. Requiere ms-personal-medico en el puerto 8081 para crear/actualizar citas.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8082" }
+  ],
+  "item": [
+    {
+      "name": "Pacientes",
+      "item": [
+        {
+          "name": "Crear paciente (201)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rut\": \"99999999-9\",\n  \"nombre\": \"Maria\",\n  \"apellido\": \"Gonzalez\",\n  \"email\": \"maria.gonzalez@mail.cl\",\n  \"telefono\": \"+56911111111\",\n  \"fechaNacimiento\": \"1990-05-12\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/pacientes", "host": ["{{baseUrl}}"], "path": ["api", "pacientes"] }
+          }
+        },
+        {
+          "name": "Listar pacientes (200)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/pacientes", "host": ["{{baseUrl}}"], "path": ["api", "pacientes"] }
+          }
+        },
+        {
+          "name": "Obtener paciente por id (200)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/pacientes/1", "host": ["{{baseUrl}}"], "path": ["api", "pacientes", "1"] }
+          }
+        },
+        {
+          "name": "Actualizar paciente (200)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rut\": \"99999999-9\",\n  \"nombre\": \"Maria Jose\",\n  \"apellido\": \"Gonzalez\",\n  \"email\": \"maria.gonzalez@mail.cl\",\n  \"telefono\": \"+56911111111\",\n  \"fechaNacimiento\": \"1990-05-12\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/pacientes/1", "host": ["{{baseUrl}}"], "path": ["api", "pacientes", "1"] }
+          }
+        },
+        {
+          "name": "Eliminar paciente (204)",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/pacientes/2", "host": ["{{baseUrl}}"], "path": ["api", "pacientes", "2"] }
+          }
+        },
+        {
+          "name": "ERROR Crear paciente email invalido (400)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"rut\": \"77777777-7\",\n  \"nombre\": \"Test\",\n  \"apellido\": \"Mal\",\n  \"email\": \"no-es-email\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/pacientes", "host": ["{{baseUrl}}"], "path": ["api", "pacientes"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Citas",
+      "item": [
+        {
+          "name": "Agendar cita (201)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fecha\": \"2026-06-10\",\n  \"hora\": \"09:30:00\",\n  \"motivo\": \"Control general\",\n  \"medicoId\": 1,\n  \"pacienteId\": 1\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/citas", "host": ["{{baseUrl}}"], "path": ["api", "citas"] }
+          }
+        },
+        {
+          "name": "Listar citas (200)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/citas", "host": ["{{baseUrl}}"], "path": ["api", "citas"] }
+          }
+        },
+        {
+          "name": "Listar citas por paciente (200)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/citas?pacienteId=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "citas"],
+              "query": [{ "key": "pacienteId", "value": "1" }]
+            }
+          }
+        },
+        {
+          "name": "Detalle de cita - inter-servicio (200)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/citas/1/detalle", "host": ["{{baseUrl}}"], "path": ["api", "citas", "1", "detalle"] }
+          }
+        },
+        {
+          "name": "Cambiar estado de cita PATCH (200)",
+          "request": {
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"estado\": \"CONFIRMADA\"\n}" },
+            "url": { "raw": "{{baseUrl}}/api/citas/1/estado", "host": ["{{baseUrl}}"], "path": ["api", "citas", "1", "estado"] }
+          }
+        },
+        {
+          "name": "Eliminar cita (204)",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/api/citas/2", "host": ["{{baseUrl}}"], "path": ["api", "citas", "2"] }
+          }
+        },
+        {
+          "name": "ERROR Agendar cita con medico inexistente (409)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fecha\": \"2026-06-10\",\n  \"hora\": \"10:00:00\",\n  \"motivo\": \"Prueba medico inexistente\",\n  \"medicoId\": 9999,\n  \"pacienteId\": 1\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/citas", "host": ["{{baseUrl}}"], "path": ["api", "citas"] }
+          }
+        },
+        {
+          "name": "ERROR Obtener cita inexistente (404)",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/api/citas/9999", "host": ["{{baseUrl}}"], "path": ["api", "citas", "9999"] }
+          }
+        }
+      ]
+    }
+  ]
+}
