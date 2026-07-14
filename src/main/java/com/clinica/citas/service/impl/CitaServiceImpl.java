@@ -5,6 +5,7 @@ import com.clinica.citas.client.MedicoDTO;
 import com.clinica.citas.dto.CitaDetalleDTO;
 import com.clinica.citas.dto.CitaRequestDTO;
 import com.clinica.citas.dto.CitaResponseDTO;
+import com.clinica.citas.event.NotificadorCitas;
 import com.clinica.citas.exception.BusinessException;
 import com.clinica.citas.exception.ResourceNotFoundException;
 import com.clinica.citas.model.Cita;
@@ -32,13 +33,16 @@ public class CitaServiceImpl implements CitaService {
     private final CitaRepository citaRepository;
     private final PacienteRepository pacienteRepository;
     private final MedicoClient medicoClient;
+    private final NotificadorCitas notificadorCitas;
 
     public CitaServiceImpl(CitaRepository citaRepository,
                            PacienteRepository pacienteRepository,
-                           MedicoClient medicoClient) {
+                           MedicoClient medicoClient,
+                           NotificadorCitas notificadorCitas) {
         this.citaRepository = citaRepository;
         this.pacienteRepository = pacienteRepository;
         this.medicoClient = medicoClient;
+        this.notificadorCitas = notificadorCitas;
     }
 
     @Override
@@ -56,7 +60,13 @@ public class CitaServiceImpl implements CitaService {
         Cita cita = new Cita(dto.fecha(), dto.hora(), dto.motivo(),
                 EstadoCita.PROGRAMADA, dto.medicoId(), paciente);
 
-        return toResponse(citaRepository.save(cita));
+        Cita guardada = citaRepository.save(cita);
+
+        // Publica el evento CITA_CREADA en la cola SQS (envio best effort:
+        // un fallo en la notificacion no impide agendar la cita).
+        notificadorCitas.publicarCitaCreada(guardada);
+
+        return toResponse(guardada);
     }
 
     @Override
