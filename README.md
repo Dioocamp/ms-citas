@@ -129,3 +129,32 @@ curl http://localhost:8082/api/citas/1/detalle
 ## 🌿 Ramas Git (IE9)
 
 `main` (estable, tag `v1.0.0`) · `develop` (integración) · `feature/*` (una por funcionalidad).
+
+---
+
+## 🐳 Docker y despliegue cloud (EP3)
+
+El microservicio se contenedoriza con un **Dockerfile multi-stage** (build con
+Maven + Temurin 17, runtime JRE Alpine, usuario no root, `HEALTHCHECK` contra
+`/actuator/health`).
+
+```bash
+# Construir y probar en local (perfil H2, sin MySQL)
+docker build -t ms-citas .
+docker run -d -p 8082:8082 -e SPRING_PROFILES_ACTIVE=h2 ms-citas
+curl http://localhost:8082/actuator/health   # {"status":"UP"}
+```
+
+**Configuración por variables de entorno:** `SERVER_PORT`, `DB_URL`,
+`DB_USERNAME`, `DB_PASSWORD`, `MS_PERSONAL_MEDICO_URL`, `GATEWAY_SECRET`,
+`NOTIFICACIONES_ENABLED`, `NOTIFICACIONES_QUEUE_URL`, `AWS_REGION`.
+
+**Integración asíncrona (EP3):** al crear una cita se publica el evento
+`CITA_CREADA` en la cola AWS SQS `clinica-citas-queue`; lo consume la Lambda
+`clinica-notificador`. Ver el repositorio
+[`ep3-infraestructura`](https://github.com/Dioocamp/ep3-infraestructura).
+
+**Pipeline CI/CD** (`.github/workflows/ci-cd.yml`): build + tests con reporte
+como artifact → imagen a Docker Hub (tags `latest` y SHA) → despliegue en
+Docker Swarm vía SSH. Secrets: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`,
+`EC2_HOST`, `EC2_USER`, `EC2_SSH_KEY`.
