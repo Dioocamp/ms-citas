@@ -159,4 +159,6 @@ como artifact → imagen a Docker Hub (tags `latest` y SHA) → despliegue en
 Docker Swarm vía SSH. Secrets: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`,
 `EC2_HOST`, `EC2_USER`, `EC2_SSH_KEY`.
 
-Despliegue continueo verificado  en la EP3
+
+
+
