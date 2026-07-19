@@ -69,10 +69,30 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <!-- AWS SDK v2: publicacion de eventos de citas en la cola SQS -->
+        <!-- AWS SDK v2: publicacion de eventos de citas en la cola SQS.
+             Se excluyen los clientes HTTP pesados (Apache y Netty): el
+             primero exige Apache HttpClient 5.4+, incompatible con la
+             version que gestiona Spring Boot 3.3.5. En su lugar se usa
+             url-connection-client, basado en el HTTP nativo del JDK:
+             sin conflictos de version y con menor huella de memoria. -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>sqs</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>software.amazon.awssdk</groupId>
+                    <artifactId>apache-client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>software.amazon.awssdk</groupId>
+                    <artifactId>netty-nio-client</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>url-connection-client</artifactId>
         </dependency>
 
         <!-- Testing -->
