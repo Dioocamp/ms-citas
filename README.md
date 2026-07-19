@@ -7,7 +7,7 @@ Forma parte de la solución de microservicios de la **Evaluación Parcial 2 (JVY
 
 ---
 
-## 🧱 Tecnologías
+##  Tecnologías
 
 | Componente | Versión |
 |---|---|
@@ -17,7 +17,7 @@ Forma parte de la solución de microservicios de la **Evaluación Parcial 2 (JVY
 | Base de datos | MySQL 8 (por defecto) · H2 (perfil `h2`) |
 | Build | Maven (Maven Wrapper) |
 
-## 🏗️ Arquitectura en capas
+##  Arquitectura en capas
 
 ```
 controller → service (interface + impl) → repository → model (entidades JPA)
@@ -32,7 +32,7 @@ controller → service (interface + impl) → repository → model (entidades JP
 
 ---
 
-## ✅ Requisitos previos
+##  Requisitos previos
 
 - **JDK 17**.
 - **MySQL 8** en `localhost:3306` (usuario `root` / clave `root`) — o usar el perfil **H2**.
@@ -42,7 +42,7 @@ controller → service (interface + impl) → repository → model (entidades JP
 
 ---
 
-## ▶️ Cómo clonar, instalar y ejecutar
+##  Cómo clonar, instalar y ejecutar
 
 ```bash
 git clone <URL-DEL-REPOSITORIO> ms-citas
@@ -115,7 +115,7 @@ curl http://localhost:8082/api/citas/1/detalle
 
 ---
 
-## 🧰 Comandos Maven (IE7)
+## Comandos Maven (IE7)
 
 | Comando | Qué hace |
 |---|---|
@@ -126,13 +126,13 @@ curl http://localhost:8082/api/citas/1/detalle
 
 ---
 
-## 🌿 Ramas Git (IE9)
+##  Ramas Git (IE9)
 
 `main` (estable, tag `v1.0.0`) · `develop` (integración) · `feature/*` (una por funcionalidad).
 
 ---
 
-## 🐳 Docker y despliegue cloud (EP3)
+##  Docker y despliegue cloud (EP3)
 
 El microservicio se contenedoriza con un **Dockerfile multi-stage** (build con
 Maven + Temurin 17, runtime JRE Alpine, usuario no root, `HEALTHCHECK` contra
@@ -158,3 +158,5 @@ curl http://localhost:8082/actuator/health   # {"status":"UP"}
 como artifact → imagen a Docker Hub (tags `latest` y SHA) → despliegue en
 Docker Swarm vía SSH. Secrets: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`,
 `EC2_HOST`, `EC2_USER`, `EC2_SSH_KEY`.
+
+Despliegue continueo verificado  en la EP3
